@@ -1,8 +1,5 @@
 def reconcile_events(actors):
-    """
-    Merge independently generated events.
-    Event IDs prevent duplicate processing.
-    """
+
 
     all_events = {}
 

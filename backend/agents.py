@@ -2,11 +2,7 @@ from backend.models import Actor, Event
 
 
 def process_incident(actor: Actor, event: Event):
-    """
-    Local decision-making.
-    Actors do not need a central server
-    to continue responding.
-    """
+
 
     if event.severity >= 8:
         decision = "PRIORITISE EMERGENCY"
