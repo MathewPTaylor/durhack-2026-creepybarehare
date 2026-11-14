@@ -1,0 +1,132 @@
+.response-unit {
+  position: absolute;
+  z-index: 6;
+
+  top: 70%;
+  left: 31%;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  pointer-events: none;
+
+  animation: responderJourney 8s ease-in-out infinite;
+}
+
+.response-unit-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  background: #071824;
+
+  border: 1px solid var(--aegis);
+
+  color: var(--aegis);
+
+  font-family: Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+
+  box-shadow:
+    0 0 0 4px rgba(98, 230, 197, 0.04),
+    0 0 22px rgba(98, 230, 197, 0.25);
+}
+
+.response-unit-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  padding: 6px 8px;
+
+  background: rgba(5, 15, 24, 0.9);
+
+  border-left: 1px solid var(--aegis);
+
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
+}
+
+.response-unit-label strong {
+  color: var(--text-primary);
+
+  font-family: Consolas, monospace;
+  font-size: 7px;
+
+  letter-spacing: 0.08em;
+}
+
+.response-unit-label span {
+  color: var(--aegis);
+
+  font-family: Consolas, monospace;
+  font-size: 6px;
+
+  letter-spacing: 0.12em;
+}
+
+.autonomous-unit .response-unit-icon {
+  border-color: var(--warning);
+
+  color: var(--warning);
+
+  box-shadow:
+    0 0 0 4px rgba(255, 184, 77, 0.04),
+    0 0 24px rgba(255, 184, 77, 0.28);
+}
+
+.autonomous-unit .response-unit-label {
+  border-left-color: var(--warning);
+}
+
+.autonomous-unit .response-unit-label span {
+  color: var(--warning);
+}
+
+@keyframes responderJourney {
+  0% {
+    top: 70%;
+    left: 31%;
+    transform: translate(-50%, -50%);
+  }
+
+  20% {
+    top: 61%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+  }
+
+  45% {
+    top: 50%;
+    left: 31%;
+    transform: translate(-50%, -50%);
+  }
+
+  70% {
+    top: 40%;
+    left: 24%;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    top: 31%;
+    left: 19%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.autonomous-unit {
+  animation-duration: 10s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .response-unit {
+    animation: none;
+
+    top: 50%;
+    left: 27%;
+  }
+}

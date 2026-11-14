@@ -1,4 +1,5 @@
 import type { NodeInfo } from './NodeInspector'
+import ResponseUnit from './ResponseUnit'
 
 type CityMapProps = {
   onSelectNode: (node: NodeInfo) => void
@@ -64,7 +65,10 @@ function CityMap({
     <section className="city-panel">
       <div className="map-header">
         <div>
-          <span className="eyebrow">LIVE OPERATIONS MAP</span>
+          <span className="eyebrow">
+            LIVE OPERATIONS MAP
+          </span>
+
           <h2>DURHAM RESPONSE GRID</h2>
         </div>
 
@@ -100,7 +104,9 @@ function CityMap({
           onClick={() => onSelectNode(hospital)}
         >
           <span className="node-symbol">H</span>
-          <span className="node-name">HOSPITAL ALPHA</span>
+          <span className="node-name">
+            HOSPITAL ALPHA
+          </span>
           <span className="node-state critical-text">
             CRITICAL
           </span>
@@ -111,7 +117,9 @@ function CityMap({
           onClick={() => onSelectNode(shelter)}
         >
           <span className="node-symbol">S</span>
-          <span className="node-name">NORTH SHELTER</span>
+          <span className="node-name">
+            NORTH SHELTER
+          </span>
           <span className="node-state">
             ONLINE
           </span>
@@ -122,7 +130,9 @@ function CityMap({
           onClick={() => onSelectNode(depot)}
         >
           <span className="node-symbol">D</span>
-          <span className="node-name">SUPPLY DEPOT</span>
+          <span className="node-name">
+            SUPPLY DEPOT
+          </span>
           <span className="node-state">
             ONLINE
           </span>
@@ -137,7 +147,9 @@ function CityMap({
           onClick={() => onSelectNode(power)}
         >
           <span className="node-symbol">P</span>
-          <span className="node-name">POWER NODE</span>
+          <span className="node-name">
+            POWER NODE
+          </span>
 
           <span
             className={
@@ -146,9 +158,15 @@ function CityMap({
                 : 'node-state warning'
             }
           >
-            {networkFailure ? 'AUTONOMOUS' : 'DEGRADED'}
+            {networkFailure
+              ? 'AUTONOMOUS'
+              : 'DEGRADED'}
           </span>
         </button>
+
+        <ResponseUnit
+          networkFailure={networkFailure}
+        />
 
         <div className="map-crosshair map-crosshair-one"></div>
         <div className="map-crosshair map-crosshair-two"></div>

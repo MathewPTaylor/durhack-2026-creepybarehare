@@ -1,11 +1,13 @@
 type ControlPanelProps = {
   networkFailure: boolean
   onToggleNetwork: () => void
+  onOpenIncidentModal: () => void
 }
 
 function ControlPanel({
   networkFailure,
   onToggleNetwork,
+  onOpenIncidentModal,
 }: ControlPanelProps) {
   return (
     <section className="control-panel">
@@ -26,7 +28,10 @@ function ControlPanel({
 
         <div className="metric">
           <span className="metric-label">AVG RESPONSE</span>
-          <strong>{networkFailure ? '3.8m' : '2.4m'}</strong>
+
+          <strong>
+            {networkFailure ? '3.8m' : '2.4m'}
+          </strong>
 
           <span className="metric-detail">
             {networkFailure
@@ -37,7 +42,10 @@ function ControlPanel({
 
         <div className="metric">
           <span className="metric-label">NEEDS RESOLVED</span>
-          <strong>{networkFailure ? '20' : '18'}</strong>
+
+          <strong>
+            {networkFailure ? '20' : '18'}
+          </strong>
 
           <span className="metric-detail">
             {networkFailure
@@ -62,7 +70,10 @@ function ControlPanel({
       </div>
 
       <div className="command-controls">
-        <button className="control-button incident-button">
+        <button
+          className="control-button incident-button"
+          onClick={onOpenIncidentModal}
+        >
           <span>+</span>
           INJECT INCIDENT
         </button>
@@ -80,7 +91,9 @@ function ControlPanel({
           }
           onClick={onToggleNetwork}
         >
-          <span>{networkFailure ? '↻' : '⚡'}</span>
+          <span>
+            {networkFailure ? '↻' : '⚡'}
+          </span>
 
           {networkFailure
             ? 'RESTORE NETWORK'
