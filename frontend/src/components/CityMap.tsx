@@ -2,9 +2,13 @@ import type { NodeInfo } from './NodeInspector'
 
 type CityMapProps = {
   onSelectNode: (node: NodeInfo) => void
+  networkFailure: boolean
 }
 
-function CityMap({ onSelectNode }: CityMapProps) {
+function CityMap({
+  onSelectNode,
+  networkFailure,
+}: CityMapProps) {
   const hospital: NodeInfo = {
     name: 'Hospital Alpha',
     type: 'CRITICAL CARE FACILITY',
@@ -44,13 +48,16 @@ function CityMap({ onSelectNode }: CityMapProps) {
   const power: NodeInfo = {
     name: 'Power Node',
     type: 'INFRASTRUCTURE NODE',
-    status: 'DEGRADED',
+    status: networkFailure ? 'AUTONOMOUS' : 'DEGRADED',
     resourceLabel: 'OUTPUT',
     resourceValue: '63%',
-    connectivity: 'UNSTABLE',
-    currentAction: 'Prioritise hospital and communications circuits',
-    reason:
-      'Available generation is reduced, so essential medical and communication infrastructure is being prioritised.',
+    connectivity: networkFailure ? 'ISOLATED' : 'UNSTABLE',
+    currentAction: networkFailure
+      ? 'Maintain essential circuits using local control'
+      : 'Prioritise hospital and communications circuits',
+    reason: networkFailure
+      ? 'Communication with central coordination has failed. The node is independently preserving hospital and emergency communication circuits.'
+      : 'Available generation is reduced, so essential medical and communication infrastructure is being prioritised.',
   }
 
   return (
@@ -70,13 +77,33 @@ function CityMap({ onSelectNode }: CityMapProps) {
       <div className="city-grid">
         <div className="scan-line"></div>
 
+        <div
+          className={
+            networkFailure
+              ? 'network-link link-one link-failed'
+              : 'network-link link-one'
+          }
+        ></div>
+
+        <div
+          className={
+            networkFailure
+              ? 'network-link link-two link-failed'
+              : 'network-link link-two'
+          }
+        ></div>
+
+        <div className="network-link link-three"></div>
+
         <button
           className="map-node hospital-node"
           onClick={() => onSelectNode(hospital)}
         >
           <span className="node-symbol">H</span>
           <span className="node-name">HOSPITAL ALPHA</span>
-          <span className="node-state critical-text">CRITICAL</span>
+          <span className="node-state critical-text">
+            CRITICAL
+          </span>
         </button>
 
         <button
@@ -85,7 +112,9 @@ function CityMap({ onSelectNode }: CityMapProps) {
         >
           <span className="node-symbol">S</span>
           <span className="node-name">NORTH SHELTER</span>
-          <span className="node-state">ONLINE</span>
+          <span className="node-state">
+            ONLINE
+          </span>
         </button>
 
         <button
@@ -94,16 +123,31 @@ function CityMap({ onSelectNode }: CityMapProps) {
         >
           <span className="node-symbol">D</span>
           <span className="node-name">SUPPLY DEPOT</span>
-          <span className="node-state">ONLINE</span>
+          <span className="node-state">
+            ONLINE
+          </span>
         </button>
 
         <button
-          className="map-node power-node"
+          className={
+            networkFailure
+              ? 'map-node power-node isolated-node'
+              : 'map-node power-node'
+          }
           onClick={() => onSelectNode(power)}
         >
           <span className="node-symbol">P</span>
           <span className="node-name">POWER NODE</span>
-          <span className="node-state warning">DEGRADED</span>
+
+          <span
+            className={
+              networkFailure
+                ? 'node-state critical-text'
+                : 'node-state warning'
+            }
+          >
+            {networkFailure ? 'AUTONOMOUS' : 'DEGRADED'}
+          </span>
         </button>
 
         <div className="map-crosshair map-crosshair-one"></div>

@@ -1521,3 +1521,307 @@
 
   text-shadow: 0 0 8px rgba(98, 230, 197, 0.55);
 }
+
+/* =========================
+   NETWORK FAILURE MODE
+   ========================= */
+
+.failure-alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 14px;
+  padding: 12px 18px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 85, 114, 0.14),
+      rgba(255, 85, 114, 0.035)
+    );
+
+  border: 1px solid rgba(255, 85, 114, 0.38);
+
+  box-shadow:
+    0 0 28px rgba(255, 85, 114, 0.08);
+
+  animation: failureAlertEnter 260ms ease-out;
+}
+
+.failure-alert > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.failure-alert > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.failure-alert-icon {
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--danger);
+
+  color: var(--danger);
+
+  font-family: Consolas, monospace;
+  font-weight: 800;
+
+  box-shadow: 0 0 14px rgba(255, 85, 114, 0.2);
+}
+
+.failure-alert strong {
+  color: var(--danger);
+
+  font-family: Consolas, monospace;
+  font-size: 10px;
+
+  letter-spacing: 0.14em;
+}
+
+.failure-alert div span:last-child {
+  color: var(--text-secondary);
+
+  font-family: Consolas, monospace;
+  font-size: 8px;
+
+  letter-spacing: 0.08em;
+}
+
+.failure-time {
+  color: var(--danger);
+
+  font-family: Consolas, monospace;
+  font-size: 8px;
+
+  letter-spacing: 0.12em;
+
+  animation: statusPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes failureAlertEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.network-failure .command-header {
+  border-top-color: var(--danger);
+
+  box-shadow:
+    0 16px 45px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 0 25px rgba(255, 85, 114, 0.05);
+}
+
+.danger-pulse {
+  background: var(--danger);
+
+  box-shadow:
+    0 0 0 4px rgba(255, 85, 114, 0.09),
+    0 0 18px rgba(255, 85, 114, 0.9);
+}
+
+.system-degraded {
+  color: var(--danger) !important;
+}
+
+.failure-progress {
+  background:
+    linear-gradient(
+      90deg,
+      var(--danger),
+      var(--warning)
+    );
+
+  box-shadow: 0 0 15px rgba(255, 85, 114, 0.45);
+}
+
+.offline-dot {
+  background: var(--danger);
+
+  box-shadow: 0 0 9px rgba(255, 85, 114, 0.9);
+
+  animation: statusPulse 1s ease-in-out infinite;
+}
+
+.network-emergency {
+  border-left-color: var(--danger);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 85, 114, 0.13),
+      rgba(255, 85, 114, 0.02)
+    );
+
+  animation: incidentEnter 260ms ease-out;
+}
+
+.network-emergency .incident-level {
+  color: var(--danger);
+}
+
+@keyframes incidentEnter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.metric-danger {
+  color: var(--danger) !important;
+}
+
+.restore-button {
+  color: var(--aegis);
+
+  border-color: rgba(98, 230, 197, 0.4);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(98, 230, 197, 0.09),
+      rgba(98, 230, 197, 0.02)
+    );
+}
+
+.restore-button:hover {
+  color: #ffffff;
+
+  border-color: var(--aegis);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(98, 230, 197, 0.19),
+      rgba(98, 230, 197, 0.06)
+    );
+
+  box-shadow: 0 0 22px rgba(98, 230, 197, 0.12);
+}
+
+/* Communication paths */
+
+.network-link {
+  position: absolute;
+  z-index: 2;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(98, 230, 197, 0.75),
+      transparent
+    );
+
+  transform-origin: left center;
+
+  box-shadow: 0 0 7px rgba(98, 230, 197, 0.35);
+
+  opacity: 0.58;
+}
+
+.link-one {
+  width: 43%;
+
+  top: 31%;
+  left: 26%;
+
+  transform: rotate(-9deg);
+}
+
+.link-two {
+  width: 39%;
+
+  top: 48%;
+  left: 23%;
+
+  transform: rotate(30deg);
+}
+
+.link-three {
+  width: 34%;
+
+  top: 66%;
+  left: 38%;
+
+  transform: rotate(-16deg);
+}
+
+.link-failed {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--danger) 0,
+      var(--danger) 8px,
+      transparent 8px,
+      transparent 17px
+    );
+
+  box-shadow: 0 0 9px rgba(255, 85, 114, 0.3);
+
+  opacity: 0.85;
+
+  animation: failedLink 0.8s steps(2) infinite;
+}
+
+@keyframes failedLink {
+  0% {
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 0.9;
+  }
+}
+
+.isolated-node {
+  border-color: var(--danger);
+
+  box-shadow:
+    0 0 0 1px rgba(255, 85, 114, 0.08),
+    0 0 26px rgba(255, 85, 114, 0.2);
+
+  animation: isolatedNodePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes isolatedNodePulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 85, 114, 0.08),
+      0 0 18px rgba(255, 85, 114, 0.12);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(255, 85, 114, 0.035),
+      0 0 32px rgba(255, 85, 114, 0.28);
+  }
+}

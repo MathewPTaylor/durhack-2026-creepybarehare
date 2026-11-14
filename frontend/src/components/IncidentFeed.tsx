@@ -1,10 +1,33 @@
-function IncidentFeed() {
+type IncidentFeedProps = {
+  networkFailure: boolean
+}
+
+function IncidentFeed({ networkFailure }: IncidentFeedProps) {
   return (
     <aside className="panel incident-panel">
       <div className="panel-heading">
         <span>03</span>
         <h2>LIVE INCIDENTS</h2>
       </div>
+
+      {networkFailure && (
+        <div className="incident network-emergency">
+          <div className="incident-top">
+            <span className="incident-level">NETWORK EMERGENCY</span>
+            <span className="incident-time">NOW</span>
+          </div>
+
+          <h3>East District Isolated</h3>
+
+          <p>
+            Communication with central coordination has been interrupted.
+          </p>
+
+          <div className="incident-action">
+            LOCAL AUTONOMY ENGAGED
+          </div>
+        </div>
+      )}
 
       <div className="incident critical">
         <div className="incident-top">
