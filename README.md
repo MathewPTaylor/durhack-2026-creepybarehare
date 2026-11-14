@@ -2,5 +2,5 @@
 ---
 ## Team members
 ---
-Mathew P Taylor
+Mathew P Taylor, 
 Golibe Nwobi 
