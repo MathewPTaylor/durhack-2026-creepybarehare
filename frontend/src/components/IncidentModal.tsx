@@ -16,6 +16,8 @@ type IncidentModalProps = {
   onCreateIncident: (incident: Incident) => void
 }
 
+const API_BASE_URL = 'http://127.0.0.1:8000'
+
 function IncidentModal({
   onClose,
   onCreateIncident,
@@ -24,29 +26,60 @@ function IncidentModal({
   const [location, setLocation] = useState('Hospital Alpha')
   const [severity, setSeverity] = useState('CRITICAL')
   const [description, setDescription] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function deployIncident() {
-    if (description.trim() === '') {
+  async function deployIncident() {
+    if (description.trim() === '' || isSubmitting) {
       return
     }
 
-    const newIncident: Incident = {
-      id: Date.now(),
-      type: incidentType,
-      location: location,
-      severity: severity,
-      description: description,
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      action:
-        severity === 'CRITICAL'
-          ? 'AUTONOMOUS RESPONSE DEPLOYED'
-          : 'INCIDENT UNDER ANALYSIS',
-    }
+    setIsSubmitting(true)
 
-    onCreateIncident(newIncident)
+    try {
+      const response = await fetch(`${API_BASE_URL}/incident`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          description: `[${incidentType} - ${severity}] ${description}`,
+          location: location,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Backend error (${response.status}): ${errorText}`)
+      }
+
+      // Play the ElevenLabs MP3 audio returned by FastAPI
+      const audioBlob = await response.blob()
+      const audioUrl = URL.createObjectURL(audioBlob)
+      const audio = new Audio(audioUrl)
+      audio.onended = () => URL.revokeObjectURL(audioUrl)
+      await audio.play()
+    } catch (error) {
+      console.error('Failed to trigger Gemini/ElevenLabs pipeline:', error)
+    } finally {
+      const newIncident: Incident = {
+        id: Date.now(),
+        type: incidentType,
+        location: location,
+        severity: severity,
+        description: description,
+        time: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        action:
+          severity === 'CRITICAL'
+            ? 'AUTONOMOUS RESPONSE DEPLOYED'
+            : 'INCIDENT UNDER ANALYSIS',
+      }
+
+      setIsSubmitting(false)
+      onCreateIncident(newIncident)
+    }
   }
 
   return (
@@ -161,8 +194,9 @@ function IncidentModal({
             type="button"
             className="deploy-incident-button"
             onClick={deployIncident}
+            disabled={isSubmitting}
           >
-            DEPLOY INCIDENT
+            {isSubmitting ? 'ANALYSING & BROADCASTING...' : 'DEPLOY INCIDENT'}
           </button>
         </div>
       </section>

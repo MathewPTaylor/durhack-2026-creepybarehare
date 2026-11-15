@@ -46,14 +46,14 @@ actors = {
     "sensor-central": Actor(
         actor_id="sensor-central",
         name="sensor-central",
-        actor_type="ActorType.SENSOR",
+        actor_type=ActorType.SENSOR,
         location="central",
     ),
 
     "sensor-south": Actor(
         actor_id="sensor-south",
         name="sensor-south",
-        actor_type="ActorType.SENSOR",
+        actor_type=ActorType.SENSOR,
         location="south",
     ),
 
