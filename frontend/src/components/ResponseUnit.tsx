@@ -2,15 +2,36 @@ import './ResponseUnit.css'
 
 type ResponseUnitProps = {
   networkFailure: boolean
+  isolatedSector: string | null
 }
 
 function ResponseUnit({
   networkFailure,
+  isolatedSector,
 }: ResponseUnitProps) {
+  let status = 'EN ROUTE'
+  let detail = 'OXYGEN DELIVERY'
+
+  const localAutonomy =
+    networkFailure ||
+    isolatedSector === 'hospital' ||
+    isolatedSector === 'depot'
+
+  if (networkFailure) {
+    status = 'LOCAL AUTONOMY'
+    detail = 'MISSION CONTINUING'
+  } else if (isolatedSector === 'depot') {
+    status = 'LOCAL MISSION'
+    detail = 'DEPOT LINK LOST'
+  } else if (isolatedSector === 'hospital') {
+    status = 'LAST-KNOWN MISSION'
+    detail = 'HOSPITAL LINK LOST'
+  }
+
   return (
     <div
       className={
-        networkFailure
+        localAutonomy
           ? 'response-unit autonomous-unit'
           : 'response-unit'
       }
@@ -22,11 +43,9 @@ function ResponseUnit({
       <div className="response-unit-label">
         <strong>MEDICAL SUPPLY UNIT</strong>
 
-        <span>
-          {networkFailure
-            ? 'LOCAL AUTONOMY'
-            : 'EN ROUTE'}
-        </span>
+        <span>{status}</span>
+
+        <small>{detail}</small>
       </div>
     </div>
   )
