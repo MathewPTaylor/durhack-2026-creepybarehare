@@ -1,33 +1,51 @@
 type ControlPanelProps = {
   networkFailure: boolean
+  isolatedSector: string | null
   onToggleNetwork: () => void
   onOpenIncidentModal: () => void
+  onOpenSectorModal: () => void
+  onRestoreSector: () => void
 }
 
 function ControlPanel({
   networkFailure,
+  isolatedSector,
   onToggleNetwork,
   onOpenIncidentModal,
+  onOpenSectorModal,
+  onRestoreSector,
 }: ControlPanelProps) {
   return (
     <section className="control-panel">
       <div className="metrics">
         <div className="metric">
-          <span className="metric-label">RESILIENCE</span>
+          <span className="metric-label">
+            RESILIENCE
+          </span>
 
-          <strong className={networkFailure ? 'metric-danger' : ''}>
+          <strong
+            className={
+              networkFailure
+                ? 'metric-danger'
+                : ''
+            }
+          >
             {networkFailure ? '71%' : '94%'}
           </strong>
 
           <span className="metric-detail">
             {networkFailure
               ? 'System operating under disruption'
-              : '+3.2% since recovery'}
+              : isolatedSector
+                ? 'Local autonomy active'
+                : '+3.2% since recovery'}
           </span>
         </div>
 
         <div className="metric">
-          <span className="metric-label">AVG RESPONSE</span>
+          <span className="metric-label">
+            AVG RESPONSE
+          </span>
 
           <strong>
             {networkFailure ? '3.8m' : '2.4m'}
@@ -41,7 +59,9 @@ function ControlPanel({
         </div>
 
         <div className="metric">
-          <span className="metric-label">NEEDS RESOLVED</span>
+          <span className="metric-label">
+            NEEDS RESOLVED
+          </span>
 
           <strong>
             {networkFailure ? '20' : '18'}
@@ -55,16 +75,30 @@ function ControlPanel({
         </div>
 
         <div className="metric">
-          <span className="metric-label">NETWORK HEALTH</span>
+          <span className="metric-label">
+            NETWORK HEALTH
+          </span>
 
-          <strong className={networkFailure ? 'metric-danger' : ''}>
-            {networkFailure ? '46%' : '87%'}
+          <strong
+            className={
+              networkFailure || isolatedSector
+                ? 'metric-danger'
+                : ''
+            }
+          >
+            {networkFailure
+              ? '46%'
+              : isolatedSector
+                ? '72%'
+                : '87%'}
           </strong>
 
           <span className="metric-detail">
             {networkFailure
               ? '2 autonomous sectors'
-              : '1 degraded sector'}
+              : isolatedSector
+                ? '1 isolated node'
+                : '1 degraded sector'}
           </span>
         </div>
       </div>
@@ -78,9 +112,26 @@ function ControlPanel({
           INJECT INCIDENT
         </button>
 
-        <button className="control-button isolate-button">
-          <span>◉</span>
-          ISOLATE SECTOR
+        <button
+          className={
+            isolatedSector
+              ? 'control-button restore-button'
+              : 'control-button isolate-button'
+          }
+          onClick={
+            isolatedSector
+              ? onRestoreSector
+              : onOpenSectorModal
+          }
+          disabled={networkFailure}
+        >
+          <span>
+            {isolatedSector ? '↻' : '◉'}
+          </span>
+
+          {isolatedSector
+            ? 'RESTORE SECTOR'
+            : 'ISOLATE SECTOR'}
         </button>
 
         <button

@@ -12,6 +12,7 @@ import IncidentModal from './components/IncidentModal'
 import ReconciliationOverlay from './components/ReconciliationOverlay'
 import TelemetryPanel from './components/TelemetryPanel'
 import SystemPulse from './components/SystemPulse'
+import SectorIsolationModal from './components/SectorIsolationModal'
 
 import type { NodeInfo } from './components/NodeInspector'
 import type { Incident } from './components/IncidentModal'
@@ -25,6 +26,12 @@ function App() {
 
   const [incidentModalOpen, setIncidentModalOpen] =
     useState(false)
+
+  const [sectorModalOpen, setSectorModalOpen] =
+    useState(false)
+
+  const [isolatedSector, setIsolatedSector] =
+    useState<string | null>(null)
 
   const [customIncidents, setCustomIncidents] =
     useState<Incident[]>([])
@@ -44,6 +51,7 @@ function App() {
       return
     }
 
+    setIsolatedSector(null)
     setNetworkFailure(true)
   }
 
@@ -54,6 +62,17 @@ function App() {
     ])
 
     setIncidentModalOpen(false)
+  }
+
+  function isolateSector(sector: string) {
+    setIsolatedSector(sector)
+    setSectorModalOpen(false)
+    setSelectedNode(null)
+  }
+
+  function restoreSector() {
+    setIsolatedSector(null)
+    setSelectedNode(null)
   }
 
   useEffect(() => {
@@ -128,6 +147,7 @@ function App() {
         <CityMap
           onSelectNode={setSelectedNode}
           networkFailure={networkFailure}
+          isolatedSector={isolatedSector}
         />
 
         <IncidentFeed
@@ -147,10 +167,15 @@ function App() {
 
       <ControlPanel
         networkFailure={networkFailure}
+        isolatedSector={isolatedSector}
         onToggleNetwork={toggleNetworkFailure}
         onOpenIncidentModal={() =>
           setIncidentModalOpen(true)
         }
+        onOpenSectorModal={() =>
+          setSectorModalOpen(true)
+        }
+        onRestoreSector={restoreSector}
       />
 
       <NodeInspector
@@ -166,6 +191,15 @@ function App() {
             setIncidentModalOpen(false)
           }
           onCreateIncident={createIncident}
+        />
+      )}
+
+      {sectorModalOpen && (
+        <SectorIsolationModal
+          onClose={() =>
+            setSectorModalOpen(false)
+          }
+          onIsolate={isolateSector}
         />
       )}
 

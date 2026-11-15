@@ -1,0 +1,77 @@
+.network-links {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 1;
+
+  pointer-events: none;
+  overflow: visible;
+}
+
+.svg-network-link {
+  stroke: rgba(98, 230, 197, 0.58);
+  stroke-width: 0.22;
+
+  vector-effect: non-scaling-stroke;
+
+  filter: url(#networkGlow);
+
+  transition:
+    stroke 250ms ease,
+    opacity 250ms ease;
+}
+
+.svg-network-junction {
+  fill: var(--aegis);
+
+  filter: url(#networkGlow);
+}
+
+/* Broken communication link */
+
+.svg-link-failed {
+  stroke: var(--danger);
+  stroke-width: 0.28;
+
+  stroke-dasharray: 1.5 1.5;
+
+  opacity: 0.9;
+
+  animation: brokenNetworkLink 0.85s linear infinite;
+}
+
+.svg-junction-failed {
+  fill: var(--danger);
+
+  animation: failedJunctionPulse 1s ease-in-out infinite;
+}
+
+@keyframes brokenNetworkLink {
+  from {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+
+  to {
+    stroke-dashoffset: -6;
+    opacity: 0.9;
+  }
+}
+
+@keyframes failedJunctionPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
