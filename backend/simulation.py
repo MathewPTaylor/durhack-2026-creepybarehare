@@ -17,15 +17,45 @@ actors = {
 
     "vehicle-3": Actor(
         actor_id="vehicle-3",
-        name="Response Vehicle 3",
+        name="Ambulance",
         actor_type=ActorType.VEHICLE,
         location="central"
     ),
 
+    "vehicle-2": Actor(
+        actor_id="vehicle-2",
+        name="Police",
+        actor_type= ActorType.VEHICLE,
+        location = "south"
+    ),
+
+    "vehicle-1": Actor(
+        actor_id="vehicle-1",
+        name="Fire",
+        actor_type=ActorType.VEHICLE,
+        location= "south"
+    ),
+    
     "sensor-north": Actor(
         actor_id="sensor-north",
         name="Northern Sensor",
         actor_type=ActorType.SENSOR,
         location="north"
-    )
+    ),
+
+    "sensor-central": Actor(
+        actor_id="sensor-central",
+        name="sensor-central",
+        actor_type="ActorType.SENSOR",
+        location="central",
+    ),
+
+    "sensor-south": Actor(
+        actor_id="sensor-south",
+        name="sensor-south",
+        actor_type="ActorType.SENSOR",
+        location="south",
+    ),
+
+
 }
