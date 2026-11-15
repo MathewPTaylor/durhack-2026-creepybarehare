@@ -428,7 +428,7 @@ A typical AEGIS demonstration looks like this:
 
 ## Team Members
 
-- Mathew P Taylor
+- Mathew Taylor
 - Golibe Nwobi
 - Xiangyu Luo
 - Louis Beardow
