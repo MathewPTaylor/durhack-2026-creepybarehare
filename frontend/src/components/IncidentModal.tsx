@@ -16,69 +16,116 @@ type IncidentModalProps = {
   onCreateIncident: (incident: Incident) => void
 }
 
-const API_BASE_URL = 'http://127.0.0.1:8000'
-
 function IncidentModal({
   onClose,
   onCreateIncident,
 }: IncidentModalProps) {
-  const [incidentType, setIncidentType] = useState('MEDICAL')
-  const [location, setLocation] = useState('Hospital Alpha')
-  const [severity, setSeverity] = useState('CRITICAL')
-  const [description, setDescription] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [incidentType, setIncidentType] =
+    useState('MEDICAL')
+
+  const [location, setLocation] =
+    useState('Hospital Alpha')
+
+  const [severity, setSeverity] =
+    useState('CRITICAL')
+
+  const [description, setDescription] =
+    useState('')
+
+  const [loading, setLoading] =
+    useState(false)
+
+  const [error, setError] =
+    useState<string | null>(null)
 
   async function deployIncident() {
-    if (description.trim() === '' || isSubmitting) {
+    if (description.trim() === '') {
+      setError('Please describe the emergency.')
       return
     }
 
-    setIsSubmitting(true)
+    setLoading(true)
+    setError(null)
 
     try {
-      const response = await fetch(`${API_BASE_URL}/incident`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'http://127.0.0.1:8000/incident',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          body: JSON.stringify({
+            description: description,
+            location: location,
+          }),
         },
-        body: JSON.stringify({
-          description: `[${incidentType} - ${severity}] ${description}`,
-          location: location,
-        }),
-      })
+      )
 
       if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Backend error (${response.status}): ${errorText}`)
+        const backendMessage =
+          await response.text()
+
+        throw new Error(
+          `Backend error ${response.status}: ${backendMessage}`,
+        )
       }
 
-      // Play the ElevenLabs MP3 audio returned by FastAPI
-      const audioBlob = await response.blob()
-      const audioUrl = URL.createObjectURL(audioBlob)
-      const audio = new Audio(audioUrl)
-      audio.onended = () => URL.revokeObjectURL(audioUrl)
+      const audioBlob =
+        await response.blob()
+
+      const audioUrl =
+        URL.createObjectURL(audioBlob)
+
+      const audio =
+        new Audio(audioUrl)
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl)
+      }
+
       await audio.play()
-    } catch (error) {
-      console.error('Failed to trigger Gemini/ElevenLabs pipeline:', error)
-    } finally {
+
       const newIncident: Incident = {
         id: Date.now(),
         type: incidentType,
         location: location,
         severity: severity,
         description: description,
-        time: new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+
+        time:
+          new Date().toLocaleTimeString(
+            [],
+            {
+              hour: '2-digit',
+              minute: '2-digit',
+            },
+          ),
+
         action:
           severity === 'CRITICAL'
             ? 'AUTONOMOUS RESPONSE DEPLOYED'
             : 'INCIDENT UNDER ANALYSIS',
       }
 
-      setIsSubmitting(false)
       onCreateIncident(newIncident)
+    } catch (requestError) {
+      console.error(
+        'AEGIS incident deployment failed:',
+        requestError,
+      )
+
+      if (requestError instanceof Error) {
+        setError(requestError.message)
+      } else {
+        setError(
+          'Unable to contact the AEGIS backend.',
+        )
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -98,6 +145,7 @@ function IncidentModal({
             className="incident-modal-close"
             type="button"
             onClick={onClose}
+            disabled={loading}
           >
             X
           </button>
@@ -110,22 +158,31 @@ function IncidentModal({
             </span>
 
             <div className="incident-type-grid">
-              {['MEDICAL', 'POWER', 'SUPPLY', 'FIRE'].map(
-                (type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    className={
-                      incidentType === type
-                        ? 'incident-option selected'
-                        : 'incident-option'
-                    }
-                    onClick={() => setIncidentType(type)}
-                  >
-                    {type}
-                  </button>
-                ),
-              )}
+              {[
+                'MEDICAL',
+                'POWER',
+                'SUPPLY',
+                'FIRE',
+              ].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+
+                  className={
+                    incidentType === type
+                      ? 'incident-option selected'
+                      : 'incident-option'
+                  }
+
+                  onClick={() =>
+                    setIncidentType(type)
+                  }
+
+                  disabled={loading}
+                >
+                  {type}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -137,16 +194,38 @@ function IncidentModal({
             <select
               className="incident-select"
               value={location}
+
               onChange={(event) =>
-                setLocation(event.target.value)
+                setLocation(
+                  event.target.value,
+                )
               }
+
+              disabled={loading}
             >
-              <option>Hospital Alpha</option>
-              <option>North Shelter</option>
-              <option>Supply Depot</option>
-              <option>Power Node</option>
-              <option>East District</option>
-              <option>South District</option>
+              <option>
+                Hospital Alpha
+              </option>
+
+              <option>
+                North Shelter
+              </option>
+
+              <option>
+                Supply Depot
+              </option>
+
+              <option>
+                Power Node
+              </option>
+
+              <option>
+                East District
+              </option>
+
+              <option>
+                South District
+              </option>
             </select>
           </label>
 
@@ -156,22 +235,30 @@ function IncidentModal({
             </span>
 
             <div className="severity-grid">
-              {['LOW', 'HIGH', 'CRITICAL'].map(
-                (level) => (
-                  <button
-                    key={level}
-                    type="button"
-                    className={
-                      severity === level
-                        ? 'incident-option selected'
-                        : 'incident-option'
-                    }
-                    onClick={() => setSeverity(level)}
-                  >
-                    {level}
-                  </button>
-                ),
-              )}
+              {[
+                'LOW',
+                'HIGH',
+                'CRITICAL',
+              ].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+
+                  className={
+                    severity === level
+                      ? 'incident-option selected'
+                      : 'incident-option'
+                  }
+
+                  onClick={() =>
+                    setSeverity(level)
+                  }
+
+                  disabled={loading}
+                >
+                  {level}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -182,21 +269,44 @@ function IncidentModal({
 
             <textarea
               className="incident-description"
+
               value={description}
+
               onChange={(event) =>
-                setDescription(event.target.value)
+                setDescription(
+                  event.target.value,
+                )
               }
+
               placeholder="Describe the emergency..."
+
+              disabled={loading}
             />
           </label>
+
+          {error && (
+            <div className="incident-api-error">
+              <strong>
+                INCIDENT DEPLOYMENT FAILED
+              </strong>
+
+              <span>
+                {error}
+              </span>
+            </div>
+          )}
 
           <button
             type="button"
             className="deploy-incident-button"
+
             onClick={deployIncident}
-            disabled={isSubmitting}
+
+            disabled={loading}
           >
-            {isSubmitting ? 'ANALYSING & BROADCASTING...' : 'DEPLOY INCIDENT'}
+            {loading
+              ? 'ANALYSING & BROADCASTING...'
+              : 'DEPLOY INCIDENT'}
           </button>
         </div>
       </section>
