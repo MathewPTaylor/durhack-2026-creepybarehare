@@ -109,7 +109,7 @@ function ControlPanel({
           onClick={onOpenIncidentModal}
         >
           <span>+</span>
-          INJECT INCIDENT
+            CREATE INCIDENT
         </button>
 
         <button
