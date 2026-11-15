@@ -1,4 +1,6 @@
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 from backend.models import Event
@@ -7,6 +9,7 @@ from backend.network import Network
 from backend.reconciliation import reconcile_events
 from backend.simulation import actors
 from backend.gemini_service import analyse_report
+from backend.elevenlabs_services import generate_speech
 
 app = FastAPI(title="AEGIS Symphony API")
 
@@ -42,62 +45,58 @@ def get_network():
 @app.post("/incident")
 def create_incident(report: Report):
 
-    analysis = analyse_report(
-        report.description
-    )
+    # Analyse report
+    analysis = analyse_report(report.description)
 
+    # Create event
     event = Event(
         actor_id="command",
         event_type="emergency",
-        location=analysis.get(
-            "location", report.location
-        ),
-        description=analysis.get(
-            "incident", report.description
-        ),
-        severity=int(
-            analysis.get("severity", 5)
-        )
+        location=analysis.get("location", report.location),
+        description=analysis.get("incident", report.description),
+        severity=int(analysis.get("severity", 5))
     )
 
     decisions = []
 
     for actor in actors.values():
+        decisions.append(
+            process_incident(actor, event)
+        )
 
-        if network.is_connected(actor.location):
-            decisions.append(
-                process_incident(actor, event)
-            )
-        else:
-            # The actor is isolated.
-            # It still makes a local decision.
-            decisions.append(
-                process_incident(actor, event)
-            )
+    announcement = (
+        f"[shouting] ATTENTION! ATTENTION! "
+        f"This is an emergency alert. "
+        f"A {event.description} has been reported "
+        f"at {event.location}! "
+        f"All response units, respond immediately!"
+    )
 
-    return {
-        "incident": event.model_dump(),
-        "analysis": analysis,
-        "decisions": decisions
-    }
+    audio = generate_speech(announcement)
 
+    return Response(
+        content=audio,
+        media_type="audio/mpeg"
+    )
 
 @app.post("/disconnect/{region}")
 def disconnect_region(region: str):
-    network.disconnect(region)
 
-    for actor in actors.values():
-        if actor.location == region:
-            actor.online = False
+        network.disconnect(region)
 
-    return {
-        "message": f"{region} disconnected",
-        "network": network.status()
-    }
+        for actor in actors.values():
+            if actor.location == region:
+                actor.online = False
+
+        return {
+            "message": f"{region} disconnected",
+            "network": network.status()
+        }
 
 
 @app.post("/reconnect/{region}")
 def reconnect_region(region: str):
+
     if region not in network.partitions:
         raise HTTPException(
             status_code=400,
@@ -121,6 +120,7 @@ def reconnect_region(region: str):
 
 @app.get("/events")
 def get_events():
+
     events = {}
 
     for actor in actors.values():
