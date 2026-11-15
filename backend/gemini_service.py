@@ -34,6 +34,7 @@ def analyse_report(report: str) -> dict:
         "severity": 5,
         "location": "unknown",
         "resources_required": ["investigation"],
+        "justification": "string explaining why each resource is needed",
         "missing_information": [],
         "confidence": "low",
         "source": "fallback",
@@ -51,11 +52,12 @@ def analyse_report(report: str) -> dict:
     - incident (string)
     - severity (integer 1-10)
     - resources_required (list of strings)
+    - justification for those resources
     - missing_information (list of strings)
     - confidence ("low", "medium", or "high")
 
     You MUST NOT invent missing information with the ONLY exception being resources
-    required whereby you can make REASONABLE assumption .
+    required whereby you can make REASONABLE assumption with justification.
     Report: {report}
     """
 

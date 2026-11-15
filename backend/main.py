@@ -89,6 +89,7 @@ def create_incident(report: Report):
     for actor in actors.values():
         decisions.append(process_incident(actor, event))
 
+    justification = analysis.get("justification") or "No justification provided."
     resources = analysis.get("resources_required") or []
     resources_text = (
         f"Deploying {', '.join(resources)}. "
@@ -98,10 +99,11 @@ def create_incident(report: Report):
 
     announcement = (
         f"ATTENTION! ATTENTION! "
-        f"This is a severity {event.severity} emergency alert. "
+        f"This is an emergency alert. "
         f"A {event.description} has been reported "
         f"at {event.location}! "
         f"{resources_text}"
+        f"We are dispatching these resources because {justification}"
         f"The severity has been reported at being at {event.severity}"
         f"All response units, respond immediately!"
     )
